@@ -1,0 +1,161 @@
+
+tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum] 
+-------------------------------- live log setup --------------------------------
+10:05:02 TEST START tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum]
+-------------------------------- live log call ---------------------------------
+10:05:02 ctx[row] = {'id': 'rtgs_below_minimum', 'jira': 'BANK-106', 'mode': 'RTGS', 'amount': '199999.99', 'expected_error': 'Minimum amount for RTGS'}
+10:05:02 ctx[payee] = {'name': 'Isha Kapoor Qajid', 'account_number': 'XXXXXXXX1065', 'ifsc': 'QAFB0019548', 'nickname': 'Diyayp', 'bank_name': 'QA Test Bank'}
+10:05:02 ctx[transfer] = {'mode': 'RTGS', 'amount': '199999.99', 'remarks': '75C12D automated test 1'}
+FAILED
+------------------------------ live log teardown -------------------------------
+10:05:02 TEST END tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum] -> FAILED
+10:05:02 Evidence sealed: test_nocode_specs__test_nocode_transfer_limit_checks-rtgs_below_minimum_02b76169 (failed)
+---------------------------- live log sessionfinish ----------------------------
+10:05:02 JIRA BANK-106 updated with failed result
+10:05:02 Raised defect DRYRUN-1 for tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum] (qaf-sig-647053be787a)
+10:05:02 JIRA dry run: 6 request(s) written to jira_publish_plan.json
+
+
+=================================== FAILURES ===================================
+____________ test_nocode[transfer_limit_checks-rtgs_below_minimum] _____________
+
+self = <qaforge.nocode.runner.SpecRunner object at 0x118643110>
+spec = Spec(id='transfer_limit_checks', title='Payment limits are enforced (no-code)', description='One run per row of testda... 'equals': '${payee.account_number}', 'within_s': 3}, description='', enabled=True)], updated_by=None, updated_at=None)
+prefix = ''
+
+    def _run_steps(self, spec: Spec, prefix: str) -> None:
+        for i, step in enumerate(spec.steps, 1):
+            if not step.enabled:
+                continue
+            label = self.step_label(step)
+            number = f"{prefix}{i}"
+            try:
+>               _IMPL[step.action](self, step)
+
+qaforge/nocode/runner.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+qaforge/nocode/runner.py:210: in _open_app
+    r.sessions[name] = r.open_app(app, role=role)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+qaforge/plugin.py:263: in _open
+    session = ******, role, settings, browsers, evidence, secrets)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+qaforge/core/session.py:70: in open
+    context = browsers.new_context(storage_state=state, video_dir=video_dir, har_path=har)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+qaforge/core/browser.py:66: in new_context
+    return self.browser.new_context(**opts)
+           ^^^^^^^^^^^^
+qaforge/core/browser.py:24: in browser
+    self.start()
+qaforge/core/browser.py:44: in start
+    self._browser = launcher.launch(**launch_args)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.11/site-packages/playwright/sync_api/_generated.py:4103: in launch
+    self._sync(
+.venv/lib/python3.11/site-packages/playwright/_impl/_browser_type.py:101: in launch
+    await self._channel.send(
+.venv/lib/python3.11/site-packages/playwright/_impl/_connection.py:78: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x118643c50>
+cb = <function Channel.send.<locals>.<lambda> at 0x11866b920>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.Error: BrowserType.launch: Executable doesn't exist at /Users/balajimakam/Library/Caches/ms-playwright/webkit-2370/pw_run.sh
+E           ╔════════════════════════════════════════════════════════════╗
+E           ║ Looks like Playwright was just installed or updated.       ║
+E           ║ Please run the following command to download new browsers: ║
+E           ║                                                            ║
+E           ║     playwright install                                     ║
+E           ║                                                            ║
+E           ║ <3 Playwright Team                                         ║
+E           ╚════════════════════════════════════════════════════════════╝
+
+.venv/lib/python3.11/site-packages/playwright/_impl/_connection.py:636: Error
+
+The above exception was the direct cause of the following exception:
+
+spec_case = ('transfer_limit_checks', {'id': 'rtgs_below_minimum', 'jira': 'BANK-106', 'mode': 'RTGS', 'amount': '199999.99', ...})
+open_app = <function open_app.<locals>._open at 0x118669800>
+ctx = <qaforge.data.context.ScenarioContext object at 0x118640a90>
+events = <qaforge.verifiers.events.EventProbe object at 0x1186412d0>
+verify = functools.partial(<function verify at 0x118461120>, ctx=<qaforge.data.context.ScenarioContext object at 0x118640a90>, evidence=<qaforge.compliance.evidence.EvidencePack object at 0x1184c7710>)
+evidence = <qaforge.compliance.evidence.EvidencePack object at 0x1184c7710>
+settings = Settings(env='local', is_production=False, allow_production=False, framework_label='qaforge', apps={'retail': AppConfi...), locators=LocatorConfig(fallback_policy='warn'), log_level='INFO', root_dir='/Users/balajimakam/Downloads/qaforge 2')
+secrets = <qaforge.config.secrets.EnvSecretProvider object at 0x1184a7850>
+data_gen = <qaforge.data.generators.DataGenerator object at 0x118640d10>
+
+    @pytest.mark.parametrize("spec_case", spec_params(ROOT))
+    def test_nocode(spec_case, open_app, ctx, events, verify, evidence, settings, secrets, data_gen):
+        spec_id, row = spec_case
+        SpecRunner(load_spec(ROOT, spec_id), row, root=ROOT, open_app=open_app, ctx=ctx, events=events,
+>                  verify=verify, evidence=evidence, settings=settings, secrets=secrets, gen=data_gen).run()
+                                                                                                       ^^^^^
+
+tests/nocode/test_nocode_specs.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+qaforge/nocode/runner.py:90: in run
+    self._run_steps(self.spec, prefix="")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <qaforge.nocode.runner.SpecRunner object at 0x118643110>
+spec = Spec(id='transfer_limit_checks', title='Payment limits are enforced (no-code)', description='One run per row of testda... 'equals': '${payee.account_number}', 'within_s': 3}, description='', enabled=True)], updated_by=None, updated_at=None)
+prefix = ''
+
+    def _run_steps(self, spec: Spec, prefix: str) -> None:
+        for i, step in enumerate(spec.steps, 1):
+            if not step.enabled:
+                continue
+            label = self.step_label(step)
+            number = f"{prefix}{i}"
+            try:
+                _IMPL[step.action](self, step)
+            except NoCodeStepError:
+                raise
+            except Exception as exc:  # noqa: BLE001 - rewrap with the tester's step number
+                detail = str(exc).split("\nCall log:")[0].strip()
+>               raise NoCodeStepError(f"Step {number} '{label}' failed: {type(exc).__name__}: {detail}") from exc
+E               qaforge.nocode.runner.NoCodeStepError: Step 1 'Open app and sign in' failed: Error: BrowserType.launch: Executable doesn't exist at /Users/balajimakam/Library/Caches/ms-playwright/webkit-2370/pw_run.sh
+E               ╔════════════════════════════════════════════════════════════╗
+E               ║ Looks like Playwright was just installed or updated.       ║
+E               ║ Please run the following command to download new browsers: ║
+E               ║                                                            ║
+E               ║     playwright install                                     ║
+E               ║                                                            ║
+E               ║ <3 Playwright Team                                         ║
+E               ╚════════════════════════════════════════════════════════════╝
+
+qaforge/nocode/runner.py:112: NoCodeStepError
+------------------------------ Captured log setup ------------------------------
+INFO     qaforge.plugin:plugin.py:222 TEST START tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum]
+------------------------------ Captured log call -------------------------------
+INFO     qaforge.context:context.py:59 ctx[row] = {'id': 'rtgs_below_minimum', 'jira': 'BANK-106', 'mode': 'RTGS', 'amount': '199999.99', 'expected_error': 'Minimum amount for RTGS'}
+INFO     qaforge.context:context.py:59 ctx[payee] = {'name': 'Isha Kapoor Qajid', 'account_number': 'XXXXXXXX1065', 'ifsc': 'QAFB0019548', 'nickname': 'Diyayp', 'bank_name': 'QA Test Bank'}
+INFO     qaforge.context:context.py:59 ctx[transfer] = {'mode': 'RTGS', 'amount': '199999.99', 'remarks': '75C12D automated test 1'}
+---------------------------- Captured log teardown -----------------------------
+INFO     qaforge.plugin:plugin.py:225 TEST END tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum] -> FAILED
+INFO     qaforge.evidence:evidence.py:298 Evidence sealed: test_nocode_specs__test_nocode_transfer_limit_checks-rtgs_below_minimum_02b76169 (failed)
+------------------------------- qaforge evidence -------------------------------
+Run report : /Users/balajimakam/Downloads/qaforge 2/evidence/20261026T043501Z-75c12d/index.html
+JIRA plan  : /Users/balajimakam/Downloads/qaforge 2/evidence/20261026T043501Z-75c12d/jira_publish_plan.json (dry run - nothing sent)
+=========================== short test summary info ============================
+FAILED tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum]
+============================== 1 failed in 0.34s ===============================

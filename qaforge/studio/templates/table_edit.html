@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ name }}{% endblock %}
+{% block main %}
+<div class="head"><div>
+  <h1>{{ title if kind == 'mapping' else name }}</h1>
+  {% if kind == 'mapping' %}
+  <p class="lede">Each line says which field of the event (or row) must equal what. Write <code>ctx.payee.account_number</code> for a value the test entered or remembered, or plain text for a fixed value.</p>
+  {% else %}
+  <p class="lede">One row per run of the test. Give every row a different id; an optional <code>jira</code> column links that row to its own test case.</p>
+  {% endif %}
+</div><a class="btn quiet" href="{{ back }}">Back</a></div>
+{% if kind == 'mapping' %}<div class="sheet" style="margin-bottom:14px"><label class="f" for="table-title">What this check proves</label><input type="text" id="table-title" value="{{ title }}"></div>{% endif %}
+<table class="grid" id="table-editor"></table>
+<div class="sticky"><div class="btns">
+  {% if user.role != 'viewer' %}<button class="btn" type="button" id="add-row">Add row</button>
+  {% if kind != 'mapping' %}<button class="btn" type="button" id="add-col">Add column</button>{% endif %}{% endif %}
+  <span style="flex:1"></span><span id="table-msg" role="status"></span>
+  {% if user.role != 'viewer' %}<button class="btn primary" type="button" id="table-save">Save</button>{% endif %}
+</div></div>
+<script type="application/json" id="table-data">{{ {'kind': kind, 'columns': columns, 'rows': rows, 'rules': rules or [], 'save_url': save_url}|tojson }}</script>
+{% endblock %}

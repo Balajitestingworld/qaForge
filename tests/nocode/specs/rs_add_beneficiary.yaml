@@ -1,0 +1,31 @@
+id: rs_add_beneficiary
+title: Add beneficiary (reusable steps)
+description: Reusable steps. Expects data named 'payee' (kind Beneficiary) and an open retail session.
+reusable: true
+steps:
+- action: open_page
+  target: retail_banking.AddBeneficiaryPage
+- action: fill
+  target: retail_banking.AddBeneficiaryPage.name
+  value: ${payee.name}
+- action: fill
+  target: retail_banking.AddBeneficiaryPage.account
+  value: ${payee.account_number}
+- action: fill
+  target: retail_banking.AddBeneficiaryPage.account_confirm
+  value: ${payee.account_number}
+- action: fill
+  target: retail_banking.AddBeneficiaryPage.ifsc
+  value: ${payee.ifsc}
+- action: fill
+  target: retail_banking.AddBeneficiaryPage.nickname
+  value: ${payee.nickname}
+- action: click
+  target: retail_banking.AddBeneficiaryPage.submit_button
+- action: expect_text
+  target: retail_banking.BeneficiaryListPage.flash
+  value: Beneficiary ${payee.nickname} added
+- action: mark_created
+  options:
+    key: payee
+    entity: beneficiary

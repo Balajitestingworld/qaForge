@@ -1,0 +1,30 @@
+from __future__ import annotations
+
+from playwright.sync_api import Locator
+
+from qaforge.core.base_page import BasePage
+
+
+class {{ class_name }}(BasePage):
+    path = "{{ path }}"
+    title = "{{ title }}"
+
+    def __init__(self, session) -> None:  # type: ignore[no-untyped-def]
+        super().__init__(session)
+        # Locators: data-testid first (ask devs to add them), then role/label, CSS last.
+        # Tip: `playwright codegen <url>` helps you find stable locators quickly.
+        self.heading = self.page.get_by_role("heading", name="{{ title }}")
+        # self.search_box = self.tid("search-input")
+        # self.submit_button = self.page.get_by_role("button", name="Submit")
+
+    def loaded_anchor(self) -> Locator:
+        return self.heading
+
+    def sensitive_locators(self) -> list[Locator]:
+        # Elements blacked out in every screenshot (account numbers, balances, PII)
+        return []
+
+    # Page methods describe user intent; no business assertions here.
+    # def search(self, term: str) -> None:
+    #     self.act.fill(self.search_box, term, "Search term")
+    #     self.act.click(self.submit_button, "Search")

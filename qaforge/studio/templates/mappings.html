@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Field checks{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Field checks</h1><p class="lede">Saved lists of “this field must equal that value”, used to check Kafka events and other systems against what a test entered. The evidence report shows every line as expected, actual and result.</p></div></div>
+<table class="grid"><tr><th>Check</th><th>Fields</th><th>Used by</th></tr>
+{% for m in mappings %}<tr><td><a href="{{ url_for('mapping_edit', name=m.name) }}">{{ m.title }}</a><div class="muted small mono">{{ m.name }}</div></td><td>{{ m.fields }}</td>
+<td>{% for s in m.used %}<a href="{{ url_for('spec_edit', spec_id=s) }}">{{ s }}</a> {% else %}<span class="muted">—</span>{% endfor %}</td></tr>
+{% else %}<tr><td colspan="3" class="muted">No field checks yet.</td></tr>{% endfor %}</table>
+{% if user.role != 'viewer' %}
+<form method="post" action="{{ url_for('mapping_new') }}" class="sheet row" style="margin-top:16px">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <div><label class="f" for="n">New check name</label><input type="text" id="n" name="name" placeholder="customer_onboarded" required></div>
+  <div class="tight"><button class="btn" type="submit">Create</button></div></form>
+{% endif %}
+{% endblock %}

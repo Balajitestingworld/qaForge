@@ -1,0 +1,13 @@
+{
+  "admin": {
+    "hash": "01f88c6b0c296d716f88c4cc4c7852496f721c538602850cad20d35072505668",
+    "salt": "0767a75c7ed520e6be4ffc28840fd3b2",
+    "role": "admin",
+    "display": "Admin",
+    "created": "2026-10-26T00:00:00Z",
+    "failed": 0,
+    "locked_until": 0,
+    "active": true,
+    "last_login": "2026-10-26T04:25:52.045Z"
+  }
+}

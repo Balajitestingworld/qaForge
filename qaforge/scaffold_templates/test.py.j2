@@ -1,0 +1,13 @@
+from __future__ import annotations
+
+import pytest
+
+
+@pytest.mark.jira("{{ jira }}")
+def test_{{ func_name }}(open_app, ctx, events, verify):
+    session = open_app("{{ app }}", role="{{ role }}")
+    # 1. generate + save data:   item = ctx.save("item", SomeFactory.build(), entity="item")
+    # 2. drive the UI via flows: receipt = SomeFlows(session).do_it(item)
+    # 3. capture app output:     ctx.save("ref", receipt.reference)
+    # 4. verify downstream:      events.expect_and_verify("topic.name", "mapping_name", key=ctx["ref"])
+    pytest.skip("scaffolded test - implement me")

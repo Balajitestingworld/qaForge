@@ -1,0 +1,45 @@
+{
+  "id": "f192c28bb9dc",
+  "kind": "run",
+  "title": "1 test on local",
+  "user": "admin",
+  "args": [
+    "-m",
+    "pytest",
+    "tests/nocode/test_nocode_specs.py::test_nocode[neft_maker_checker]",
+    "--env",
+    "local",
+    "-m",
+    "",
+    "-p",
+    "no:cacheprovider",
+    "--jira",
+    "dry-run",
+    "--qa-browser",
+    "chromium",
+    "-o",
+    "log_cli=true",
+    "--log-cli-level=INFO",
+    "-o",
+    "log_cli_format=%(asctime)s %(message)s",
+    "-o",
+    "log_cli_date_format=%H:%M:%S",
+    "-o",
+    "console_output_style=classic",
+    "-q"
+  ],
+  "status": "passed",
+  "created": "2026-10-26T04:31:04.254Z",
+  "started": "2026-10-26T04:31:04.255Z",
+  "finished": "2026-10-26T04:31:16.724Z",
+  "returncode": 0,
+  "run_id": "20261026T043104Z-7a4c8f",
+  "meta": {
+    "env": "local",
+    "tests": [
+      "tests/nocode/test_nocode_specs.py::test_nocode[neft_maker_checker]"
+    ],
+    "browser": "chromium",
+    "jira": "dry-run"
+  }
+}

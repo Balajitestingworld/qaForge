@@ -1,0 +1,46 @@
+{
+  "id": "1e0f8c6efd55",
+  "kind": "run",
+  "title": "1 test on local",
+  "user": "admin",
+  "args": [
+    "-m",
+    "pytest",
+    "tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-imps_above_limit]",
+    "--env",
+    "local",
+    "-m",
+    "",
+    "-p",
+    "no:cacheprovider",
+    "--jira",
+    "dry-run",
+    "--qa-browser",
+    "webkit",
+    "-o",
+    "log_cli=true",
+    "--log-cli-level=INFO",
+    "-o",
+    "log_cli_format=%(asctime)s %(message)s",
+    "-o",
+    "log_cli_date_format=%H:%M:%S",
+    "-o",
+    "console_output_style=classic",
+    "-q",
+    "--headed"
+  ],
+  "status": "failed",
+  "created": "2026-10-26T04:34:30.141Z",
+  "started": "2026-10-26T04:34:30.142Z",
+  "finished": "2026-10-26T04:34:30.801Z",
+  "returncode": 1,
+  "run_id": "20261026T043430Z-03a831",
+  "meta": {
+    "env": "local",
+    "tests": [
+      "tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-imps_above_limit]"
+    ],
+    "browser": "webkit",
+    "jira": "dry-run"
+  }
+}

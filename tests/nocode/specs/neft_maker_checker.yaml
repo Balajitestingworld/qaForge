@@ -1,0 +1,99 @@
+id: neft_maker_checker
+title: NEFT payment approved by checker (no-code)
+description: Maker adds a beneficiary and pays by NEFT, events are checked, checker approves in the back office.
+jira:
+- BANK-110
+tags:
+- smoke
+data:
+- name: payee
+  factory: Beneficiary
+- name: transfer
+  factory: Transfer
+  overrides:
+    mode: NEFT
+steps:
+- action: open_app
+  options:
+    app: retail
+    role: maker
+- action: use_steps
+  options:
+    spec: rs_add_beneficiary
+- action: verify_event
+  options:
+    topic: beneficiary.created
+    key: ${payee.account_number}
+    mapping: beneficiary_created
+- action: open_page
+  target: retail_banking.TransferPage
+- action: select
+  target: retail_banking.TransferPage.beneficiary
+  value: ${payee.nickname} - ${payee.name}
+- action: select
+  target: retail_banking.TransferPage.mode
+  value: ${transfer.mode}
+- action: fill
+  target: retail_banking.TransferPage.amount
+  value: ${transfer.amount}
+- action: fill
+  target: retail_banking.TransferPage.remarks
+  value: ${transfer.remarks}
+- action: click
+  target: retail_banking.TransferPage.continue_button
+- action: expect_text
+  target: retail_banking.TransferReviewPage.review_beneficiary
+  value: ${payee.name}
+  options:
+    exact: true
+- action: click
+  target: retail_banking.TransferReviewPage.confirm_button
+- action: capture_text
+  target: retail_banking.TransferSuccessPage.reference
+  save_as: txn_ref
+- action: expect_text
+  target: retail_banking.TransferSuccessPage.status
+  value: PENDING_APPROVAL
+- action: verify_event
+  options:
+    topic: payments.initiated
+    key: ${txn_ref}
+    mapping: payment_initiated
+- action: open_app
+  options:
+    app: backoffice
+    role: checker
+- action: open_page
+  target: backoffice.PaymentsQueuePage
+- action: fill
+  target: backoffice.PaymentsQueuePage.search_box
+  value: ${txn_ref}
+- action: click
+  target: backoffice.PaymentsQueuePage.search_button
+- action: read_grid_row
+  target: backoffice.PaymentsQueuePage.grid
+  value: Reference=${txn_ref}
+  save_as: queue_row
+- action: verify_values
+  description: Back office shows the maker's payment
+  options:
+    source: queue_row
+    rows:
+    - {field: Beneficiary, expected: '${payee.name}', rule: equals}
+    - {field: Amount, expected: '${transfer.amount}', rule: decimal}
+    - {field: Status, expected: PENDING_APPROVAL, rule: equals}
+- action: click
+  description: Approve the payment
+  locator: page.get_by_role("button", name="Approve")
+- action: expect_text
+  target: backoffice.PaymentsQueuePage.flash
+  value: approved
+- action: verify_event
+  options:
+    topic: payments.approved
+    key: ${txn_ref}
+    rows:
+    - {field: txnRef, expected: '${txn_ref}', rule: equals}
+    - {field: status, expected: APPROVED, rule: equals}
+- action: checkpoint
+  value: Payment approved

@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+evidence/
+.auth/
+*.har
+.env
+config/secrets/*.env
+
+# Local demo bank used only to self-test the framework - not part of the product
+# demo_app/
+
+# Studio runtime data: users, audit log, job output, secret key
+# studio_data/

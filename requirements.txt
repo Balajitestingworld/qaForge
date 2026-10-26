@@ -1,0 +1,12 @@
+playwright>=1.45
+pytest>=8.0
+pydantic>=2.6
+PyYAML>=6.0
+Jinja2>=3.1
+requests>=2.31
+pytest-xdist>=3.5
+Flask>=3.0              # QA Forge Studio (no-code UI)
+waitress>=3.0           # production web server for Studio on Windows/Linux
+# Optional - install when you connect real systems:
+# confluent-kafka>=2.4          # Kafka verification   (or confluent-kafka[avro] for Schema Registry)
+# SQLAlchemy>=2.0 oracledb>=2.0 # DB verification (Oracle); psycopg[binary] for PostgreSQL

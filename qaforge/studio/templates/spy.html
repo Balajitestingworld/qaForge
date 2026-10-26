@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Capture locators{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Capture locators</h1>
+<p class="lede">Studio signs in through Okta, opens the screen and lists its elements. Each locator is built the way Playwright recommends (test id, role and name, label…) and then run against the live page. It is kept only if it finds exactly that one element.</p></div></div>
+
+<form method="post" class="sheet">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  {% set prefill = prefill %}
+  {% include "_target_form.html" %}
+  <label class="f">How</label>
+  <div class="btns">
+    <label class="check"><input type="radio" name="mode" value="scan" checked> Scan the whole screen (runs in the background)</label>
+    <label class="check"><input type="radio" name="mode" value="pick"> Pick elements in a visible browser (move between screens, click what you need)</label>
+  </div>
+  <div class="btns" style="margin-top:16px"><button class="btn primary" type="submit">Start</button></div>
+</form>
+
+<div class="sheet">
+  <h3 style="margin-top:0">Good to know</h3>
+  <ul class="muted" style="margin:0;padding-left:18px">
+    <li>Screens deep inside a journey (for example a confirmation page) are easiest with “Pick elements”, or record the journey and save its locators.</li>
+    <li>Values shown on screen that look like account numbers, card numbers or balances are never used inside a locator, and are blacked out in the screenshot.</li>
+    <li>Ask developers to add <code>data-testid</code> to buttons and fields; those locators survive redesigns best.</li>
+  </ul>
+</div>
+
+{% if recent %}
+<h2>Earlier captures</h2>
+<table class="grid"><tr><th>Status</th><th>Capture</th><th>By</th><th></th></tr>
+{% for j in recent %}<tr><td><span class="stamp {{ j.status }}">{{ j.status }}</span></td><td>{{ j.title }}</td><td>{{ j.user }}</td>
+<td><a href="{{ url_for('spy_result', job_id=j.id) }}">Open</a></td></tr>{% endfor %}</table>
+{% endif %}
+{% endblock %}

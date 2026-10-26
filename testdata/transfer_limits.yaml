@@ -1,0 +1,15 @@
+- id: neft_above_limit
+  jira: BANK-104
+  mode: NEFT
+  amount: '200000.01'
+  expected_error: exceeds the NEFT per-transaction limit
+- id: imps_above_limit
+  jira: BANK-105
+  mode: IMPS
+  amount: '250000.00'
+  expected_error: exceeds the IMPS per-transaction limit
+- id: rtgs_below_minimum
+  jira: BANK-106
+  mode: RTGS
+  amount: '199999.99'
+  expected_error: Minimum amount for RTGS

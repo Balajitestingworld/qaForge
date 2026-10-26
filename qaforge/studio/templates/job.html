@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }}{% endblock %}
+{% block main %}
+<div class="head">
+  <div><h1>{{ job.title }}</h1>
+    <p class="lede">Started by {{ job.user }} · {{ job.created[:19].replace('T', ' ') }} UTC{% if job.run_id %} · run <span class="mono">{{ job.run_id }}</span>{% endif %}</p></div>
+  <span class="stamp big {{ job.status }}" id="job-stamp">{{ job.status }}</span>
+</div>
+<div id="job" data-job="{{ job.id }}" data-autogo="{{ '1' if job.kind in ('scan', 'pick', 'record', 'check') else '0' }}">
+  <div class="btns" style="margin-bottom:12px">
+    <a class="btn primary" id="result-link" href="{{ result_url or '#' }}" {% if not (result_url and job.status in ('passed','failed','error')) %}hidden{% endif %}>{{ 'Open results and evidence' if job.kind == 'run' else 'Open results' }}</a>
+    {% if job.status in ('queued', 'running') and user.role != 'viewer' %}
+    <form method="post" action="{{ url_for('job_cancel', job_id=job.id) }}" class="while-running"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button class="btn danger" type="submit">Stop</button></form>
+    {% endif %}
+  </div>
+  <pre class="console" id="console" aria-live="polite"></pre>
+</div>
+{% endblock %}

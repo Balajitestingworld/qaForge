@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ env|upper }} settings{% endblock %}
+{% block main %}
+<div class="head"><div><h1>{{ env|upper }} settings</h1>
+<p class="lede">Grey hints show the shared default used when a field is left empty. Settings are checked before they are saved; secret values are entered on the environment tab, never here.</p></div></div>
+<div id="env-form" class="sheet"></div>
+<div class="sticky"><div class="btns"><span class="errors" id="env-msg" role="status"></span><span style="flex:1"></span>
+  <a class="btn quiet" href="{{ url_for('envs', env=env) }}">Cancel</a><button class="btn primary" id="env-save" type="button">Check and save</button></div></div>
+<script type="application/json" id="env-form-data">{{ data|tojson }}</script>
+{% endblock %}

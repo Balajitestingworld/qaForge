@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ spec.title or 'New test' }}{% endblock %}
+{% block main %}
+<div class="head">
+  <div><h1>{{ 'New test' if is_new else spec.title }}</h1>
+    <p class="lede">Each step is one thing a tester would do or check. Pick screen elements from the page objects, or paste a locator. Values in <code>${…}</code> come from generated data or from earlier steps.</p></div>
+  {% if not is_new and user.role != 'viewer' %}
+  <form method="post" action="{{ url_for('spec_delete', spec_id=spec.id) }}" data-confirm="Delete this test? This can't be undone.">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}"><button class="btn danger quiet" type="submit">Delete test</button></form>
+  {% endif %}
+</div>
+
+<div id="editor" data-new="{{ '1' if is_new else '0' }}" data-readonly="{{ '1' if user.role == 'viewer' else '0' }}"></div>
+<script type="application/json" id="spec-data">{{ spec|tojson }}</script>
+<script type="application/json" id="catalog-data">{{ catalog|tojson }}</script>
+
+<div class="sticky">
+  <div class="btns">
+    <span class="errors" id="save-msg" role="status"></span>
+    <span style="flex:1"></span>
+    {% if user.role != 'viewer' %}
+    <label class="check">Run on <select id="run-env" style="width:auto">{% for e in envs %}<option {% if e == default_env %}selected{% endif %}>{{ e }}</option>{% endfor %}</select></label>
+    <button class="btn" id="save-run" type="button">Save and run</button>
+    <button class="btn primary" id="save" type="button">Save test</button>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

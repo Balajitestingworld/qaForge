@@ -1,0 +1,44 @@
+id: transfer_limit_checks
+title: Payment limits are enforced (no-code)
+description: One run per row of testdata/transfer_limits.yaml.
+tags:
+- regression
+data_file: testdata/transfer_limits.yaml
+data:
+- name: payee
+  factory: Beneficiary
+- name: transfer
+  factory: Transfer
+  overrides:
+    mode: ${row.mode}
+    amount: ${row.amount}
+steps:
+- action: open_app
+  options:
+    app: retail
+    role: maker
+- action: use_steps
+  options:
+    spec: rs_add_beneficiary
+- action: open_page
+  target: retail_banking.TransferPage
+- action: select
+  target: retail_banking.TransferPage.beneficiary
+  value: ${payee.nickname} - ${payee.name}
+- action: select
+  target: retail_banking.TransferPage.mode
+  value: ${transfer.mode}
+- action: fill
+  target: retail_banking.TransferPage.amount
+  value: ${transfer.amount}
+- action: click
+  target: retail_banking.TransferPage.continue_button
+- action: expect_text
+  target: retail_banking.TransferPage.form_error
+  value: ${row.expected_error}
+- action: expect_no_event
+  options:
+    topic: payments.initiated
+    field: beneficiary.accountNumber
+    equals: ${payee.account_number}
+    within_s: 3

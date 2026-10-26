@@ -1,0 +1,44 @@
+# Local run against the bundled QA Demo Bank (started automatically by tests/conftest.py).
+apps:
+  retail:
+    base_url: http://127.0.0.1:8765
+    auth: okta
+    landing_path: /retail/dashboard
+    ready_selector: '[data-testid="app-header"]'
+    description: Retail internet banking (maker)
+  backoffice:
+    base_url: http://127.0.0.1:8765
+    auth: okta
+    landing_path: /backoffice/payments
+    ready_selector: '[data-testid="app-header"]'
+    description: Payments back office (checker)
+
+users:
+  maker:
+    username_secret: RETAIL_MAKER_USER
+    password_secret: RETAIL_MAKER_PASSWORD
+    totp_secret: RETAIL_MAKER_TOTP_SEED
+  checker:
+    username_secret: BACKOFFICE_CHECKER_USER
+    password_secret: BACKOFFICE_CHECKER_PASSWORD
+    totp_secret: BACKOFFICE_CHECKER_TOTP_SEED
+
+okta:
+  domain: ""                      # demo IdP is served by the app itself
+  mfa: totp
+
+secrets:
+  provider: env
+  dotenv_files: [config/secrets/local.env]   # demo credentials only - never for real envs
+
+events:
+  source: http
+  http_base_url: http://127.0.0.1:8765
+
+jira:
+  enabled: true                   # exercised in dry-run mode: see evidence/<run>/jira_publish_plan.json
+  dry_run: true
+  deployment: cloud
+  base_url: https://your-domain.atlassian.net
+  project_key: BANK
+  mode: issues

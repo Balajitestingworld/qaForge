@@ -1,0 +1,41 @@
+app: backoffice
+class_name: PaymentsSearchPage
+title: Payments search
+path: /backoffice/payments
+loaded_anchor: app_header
+description: ''
+elements:
+- name: app_header
+  locator: page.get_by_test_id("app-header")
+  description: header
+  sensitive: false
+  fallbacks: []
+- name: signed_in_user
+  locator: page.get_by_test_id("signed-in-user")
+  description: span '******'
+  sensitive: false
+  fallbacks: []
+- name: payments_queue_link
+  locator: page.get_by_test_id("nav-queue")
+  description: link 'Payments queue'
+  sensitive: false
+  fallbacks:
+  - page.get_by_role("link", name="Payments queue", exact=True)
+- name: sign_out_link
+  locator: page.get_by_role("link", name="Sign out", exact=True)
+  description: link 'Sign out'
+  sensitive: false
+  fallbacks:
+  - page.get_by_text("Sign out", exact=True)
+- name: payments_queue_heading
+  locator: page.get_by_test_id("queue-title")
+  description: heading 'Payments queue'
+  sensitive: false
+  fallbacks:
+  - page.get_by_role("heading", name="Payments queue", exact=True)
+- name: bo_payments_grid
+  locator: page.get_by_test_id("bo-payments-grid")
+  description: table
+  sensitive: false
+  fallbacks:
+  - page.get_by_role("table")

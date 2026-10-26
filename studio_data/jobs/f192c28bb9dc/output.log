@@ -1,0 +1,88 @@
+
+tests/nocode/test_nocode_specs.py::test_nocode[neft_maker_checker] 
+-------------------------------- live log setup --------------------------------
+10:01:04 TEST START tests/nocode/test_nocode_specs.py::test_nocode[neft_maker_checker]
+-------------------------------- live log call ---------------------------------
+10:01:04 ctx[payee] = {'name': 'Saanvi Banerjee Qakcg', 'account_number': 'XXXXXXXX9286', 'ifsc': 'TEST0015436', 'nickname': 'Anjalixj', 'bank_name': 'QA Test Bank'}
+10:01:04 ctx[transfer] = {'mode': 'NEFT', 'amount': '19305.44', 'remarks': '7A4C8F automated test 1'}
+10:01:06 Launched chromium 156.0.8078.4 (headless=True)
+10:01:06 Opened session retail:maker (cached login: False)
+10:01:06 STEP Open retail as maker
+10:01:06 STEP Okta sign-in as 'maker' › Verify visible: Okta username field
+10:01:07 STEP Okta sign-in as 'maker' › Username = ******
+10:01:07 STEP Okta sign-in as 'maker' › Next
+10:01:07 STEP Okta sign-in as 'maker' › Verify visible: Okta password field
+10:01:07 STEP Okta sign-in as 'maker' › Password = ******
+10:01:07 STEP Okta sign-in as 'maker' › Verify password
+10:01:08 STEP Okta sign-in as 'maker' › Verify visible: Okta verification code field
+10:01:08 STEP Okta sign-in as 'maker' › One-time code = ******
+10:01:08 STEP Okta sign-in as 'maker' › Verify code
+10:01:10 STEP Verify visible: retail home after sign-in
+10:01:10 Saved authenticated session for retail/maker
+10:01:10 STEP Add beneficiary (reusable steps) › Open Add beneficiary
+10:01:10 STEP Add beneficiary (reusable steps) › Verify visible: Add beneficiary loaded
+10:01:10 STEP Add beneficiary (reusable steps) › Name = Saanvi Banerjee Qakcg
+10:01:10 STEP Add beneficiary (reusable steps) › Account = XXXXXXXX9286
+10:01:10 STEP Add beneficiary (reusable steps) › Account confirm = XXXXXXXX9286
+10:01:10 STEP Add beneficiary (reusable steps) › Ifsc = TEST0015436
+10:01:10 STEP Add beneficiary (reusable steps) › Nickname = Anjalixj
+10:01:10 STEP Add beneficiary (reusable steps) › Submit button
+10:01:10 STEP Add beneficiary (reusable steps) › Verify Flash shows 'Beneficiary Anjalixj added'
+10:01:10 Ledger: recorded beneficiary 'XXXXXXXX9286'
+10:01:10 Waiting up to 60s for event on 'beneficiary.created' with key XXXXXXXX9286
+10:01:10 Received event on 'beneficiary.created' with key XXXXXXXX9286 after 6 ms: {"eventType": "BENEFICIARY_CREATED", "customer": "******", "name": "Saanvi Banerjee Qakcg", "accountNumber": "XXXXXXXX9286", "ifsc": "TEST0015436", "nickname": "Anjalixj", "createdAt": "2026-10-26T04:31:10Z"}
+10:01:10 VERIFIED beneficiary.created event matches the beneficiary entered in the UI (4 fields, source=kafka:beneficiary.created)
+10:01:10 STEP Open Transfer funds
+10:01:11 STEP Verify visible: Transfer funds loaded
+10:01:11 STEP Beneficiary = Anjalixj - Saanvi Banerjee Qakcg
+10:01:11 STEP Mode = NEFT
+10:01:11 STEP Amount = 19305.44
+10:01:11 STEP Remarks = 7A4C8F automated test 1
+10:01:11 STEP Continue button
+10:01:11 STEP Verify Review beneficiary shows 'Saanvi Banerjee Qakcg'
+10:01:11 STEP Confirm button
+10:01:11 STEP Capture Reference
+10:01:11 ctx[txn_ref] = TXN2026102600012162
+10:01:11 STEP Verify Status shows 'PENDING_APPROVAL'
+10:01:11 Waiting up to 60s for event on 'payments.initiated' with key TXN2026102600012162
+10:01:11 Received event on 'payments.initiated' with key TXN2026102600012162 after 1 ms: {"eventType": "PAYMENT_INITIATED", "txnRef": "TXN2026102600012162", "mode": "NEFT", "amount": "19305.44", "currency": "INR", "debitAccount": "XXXXXXXX3456", "beneficiary": {"name": "Saanvi Banerjee Qakcg", "accountNumber": "XXXXXXXX9286", "ifsc": "TEST0015436", "nickname": "Anjalixj"}, "remarks": "7A4C8F automated test 1", "status": "PENDING_APPROVAL", "initiatedBy": "******", "createdAt": "2026-10-26T04:31:11Z"}
+10:01:11 VERIFIED payments.initiated event matches the transfer entered in the retail UI (11 fields, source=kafka:payments.initiated)
+10:01:11 Opened session backoffice:checker (cached login: False)
+10:01:11 STEP Open backoffice as checker
+10:01:11 STEP Okta sign-in as 'checker' › Verify visible: Okta username field
+10:01:11 STEP Okta sign-in as 'checker' › Username = ******
+10:01:11 STEP Okta sign-in as 'checker' › Next
+10:01:11 STEP Okta sign-in as 'checker' › Verify visible: Okta password field
+10:01:11 STEP Okta sign-in as 'checker' › Password = ******
+10:01:11 STEP Okta sign-in as 'checker' › Verify password
+10:01:13 STEP Okta sign-in as 'checker' › Verify visible: Okta verification code field
+10:01:13 STEP Okta sign-in as 'checker' › One-time code = ******
+10:01:13 STEP Okta sign-in as 'checker' › Verify code
+10:01:15 STEP Verify visible: backoffice home after sign-in
+10:01:15 Saved authenticated session for backoffice/checker
+10:01:15 STEP Open Payments queue
+10:01:15 STEP Verify visible: Payments queue loaded
+10:01:15 STEP Search box = TXN2026102600012162
+10:01:15 STEP Search button
+10:01:15 STEP Verify visible: Payments queue row {'Reference': 'TXN2026102600012162'}
+10:01:15 ctx[queue_row] = {'Reference': 'TXN2026102600012162', 'Beneficiary': 'Saanvi Banerjee Qakcg', 'Account': 'XXXXXXXX9286', 'Amount': '₹19,305.44', 'Mode': 'NEFT', 'Status': 'PENDING_APPROVAL', 'Action': 'Approve'}
+10:01:15 VERIFIED Back office shows the maker's payment (3 fields, source=saved:queue_row)
+10:01:15 STEP Approve the payment
+10:01:15 STEP Verify Flash shows 'approved'
+10:01:15 Waiting up to 60s for event on 'payments.approved' with key TXN2026102600012162
+10:01:15 Received event on 'payments.approved' with key TXN2026102600012162 after 1 ms: {"eventType": "PAYMENT_APPROVED", "txnRef": "TXN2026102600012162", "status": "APPROVED", "approvedBy": "******", "amount": "19305.44", "approvedAt": "2026-10-26T04:31:15Z"}
+10:01:15 VERIFIED verification (2 fields, source=kafka:payments.approved)
+10:01:15 STEP Checkpoint: Payment approved
+PASSED
+------------------------------ live log teardown -------------------------------
+10:01:16 TEST END tests/nocode/test_nocode_specs.py::test_nocode[neft_maker_checker] -> PASSED
+10:01:16 Evidence sealed: test_nocode_specs__test_nocode_neft_maker_checker_914e8a45 (passed)
+---------------------------- live log sessionfinish ----------------------------
+10:01:16 JIRA BANK-110 updated with passed result
+10:01:16 JIRA dry run: 2 request(s) written to jira_publish_plan.json
+
+
+------------------------------- qaforge evidence -------------------------------
+Run report : /Users/balajimakam/Downloads/qaforge 2/evidence/20261026T043104Z-7a4c8f/index.html
+JIRA plan  : /Users/balajimakam/Downloads/qaforge 2/evidence/20261026T043104Z-7a4c8f/jira_publish_plan.json (dry run - nothing sent)
+============================== 1 passed in 12.13s ==============================

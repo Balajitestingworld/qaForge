@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qaforge"
+version = "0.1.0"
+description = "Enterprise Playwright + pytest automation framework with audit-grade evidence, SSO, event verification and JIRA integration"
+requires-python = ">=3.10"
+dependencies = [
+    "playwright>=1.45",
+    "pytest>=8.0",
+    "pydantic>=2.6",
+    "PyYAML>=6.0",
+    "Jinja2>=3.1",
+    "requests>=2.31",
+    "Flask>=3.0",
+]
+
+[project.optional-dependencies]
+parallel = ["pytest-xdist>=3.5"]
+kafka = ["confluent-kafka>=2.4"]
+avro = ["confluent-kafka[avro]>=2.4"]
+db = ["SQLAlchemy>=2.0"]
+oracle = ["SQLAlchemy>=2.0", "oracledb>=2.0"]
+postgres = ["SQLAlchemy>=2.0", "psycopg[binary]>=3.1"]
+dev = ["ruff>=0.5", "mypy>=1.10", "pytest-xdist>=3.5"]
+
+[project.scripts]
+qaforge = "qaforge.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["qaforge*"]
+
+[tool.setuptools.package-data]
+qaforge = ["compliance/templates/*.j2", "scaffold_templates/*.j2", "studio/templates/*.html", "studio/static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers -m 'not demo_failure'"
+markers = [
+    "jira(*keys): link the test to one or more JIRA test case keys",
+    "smoke: fast business-critical checks",
+    "regression: full regression pack",
+    "unit: framework self-test (no evidence pack)",
+    "demo_failure: intentionally failing demo test (shows failure evidence and defect flow)",
+]
+log_level = "INFO"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+ignore = ["S101"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true

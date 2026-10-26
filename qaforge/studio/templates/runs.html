@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Runs{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Runs</h1><p class="lede">Every run keeps its evidence: step screenshots, logs, traces, data checks and a tamper-evident seal per test.</p></div></div>
+<table class="grid">
+  <tr><th>Result</th><th>Run</th><th>Environment</th><th>Passed</th><th>Failed</th><th>Tests</th><th>Started (UTC)</th><th>By</th></tr>
+  {% for r in runs %}
+  <tr><td><span class="stamp {{ r.outcome }}">{{ r.outcome }}</span></td>
+      <td><a class="mono" href="{{ url_for('run_detail', run_id=r.run_id) }}">{{ r.run_id }}</a></td>
+      <td>{{ (r.env or '-').upper() }}</td><td>{{ r.counts.get('passed', 0) }}</td>
+      <td>{{ r.counts.get('failed', 0) + r.counts.get('error', 0) }}</td><td>{{ r.total }}</td>
+      <td class="mono small">{{ (r.started or '')[:19].replace('T', ' ') }}</td><td>{{ r.by or '-' }}</td></tr>
+  {% else %}<tr><td colspan="8" class="muted">No runs yet. Start one from <a href="{{ url_for('tests') }}">Tests</a>.</td></tr>{% endfor %}
+</table>
+{% endblock %}

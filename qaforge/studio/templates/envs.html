@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Environments{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Environments</h1><p class="lede">One tab per environment: where its applications live, which roles sign in, and where events and results go. Secret values are never shown; Studio only shows whether each one is available.</p></div></div>
+
+<nav class="tabs" aria-label="Environments">
+  {% for n in names %}<a href="{{ url_for('envs', env=n) }}" class="{{ 'on' if n == tab }}" {% if n == tab %}aria-current="page"{% endif %}>{{ n|upper }}{% if n in ('prod', 'production', 'prd', 'live') %}<span class="prod"> prod</span>{% endif %}</a>{% endfor %}
+  {% if user.role == 'admin' %}<a href="{{ url_for('envs', env='_new') }}" class="add {{ 'on' if tab == '_new' }}">+ Add environment</a>{% endif %}
+</nav>
+
+{% if tab == '_new' %}
+<form method="post" action="{{ url_for('env_new') }}" class="sheet" style="max-width:620px">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <h2 style="margin-top:0">Add an environment</h2>
+  <div class="row">
+    <div><label class="f" for="en">Name</label><input type="text" id="en" name="name" placeholder="uat" required pattern="[a-z][a-z0-9_\-]{1,20}"></div>
+    <div><label class="f" for="ec">Start from a copy of</label><select id="ec" name="copy_from"><option value="">Nothing (empty)</option>{% for n in names %}<option>{{ n }}</option>{% endfor %}</select></div>
+  </div>
+  <p class="small muted">Copying brings over applications, roles and settings. Change the addresses and secret names afterwards.</p>
+  <div class="btns"><button class="btn primary" type="submit">Create and fill in</button></div>
+</form>
+{% elif s %}
+<section class="sheet">
+  <div class="head" style="margin-bottom:8px">
+    <h2 style="margin:0">{{ tab|upper }}{% if s.production %} <span class="pill bad">production</span>{% endif %}</h2>
+    {% if user.role == 'admin' %}<div class="btns"><a class="btn primary" href="{{ url_for('env_form', env=tab) }}">Edit settings</a><a class="btn quiet" href="{{ url_for('env_edit', env=tab) }}">Edit as text</a></div>{% endif %}
+  </div>
+  {% if s.blocked %}<div class="notice">Protected: automation is refused here unless an administrator explicitly allows it in Safety settings.</div>
+  {% elif s.error %}<div class="notice bad">{{ s.error }}</div>{% endif %}
+
+  <h3>Applications</h3>
+  {% if raw.apps %}
+  <table class="grid"><tr><th>Name in tests</th><th>Address</th><th>Sign-in</th></tr>
+  {% for name, a in raw.apps.items() %}<tr><td>{{ name }}</td><td class="mono small">{{ a.base_url }}</td><td>{{ 'Okta' if a.get('auth', 'okta') == 'okta' else 'none' }}</td></tr>{% endfor %}</table>
+  {% else %}<p class="muted">No applications yet.</p>{% endif %}
+
+  {% if s.jira %}<p class="small muted" style="margin-top:12px">Events: {{ s.events }} · Browser: {{ s.browser }} · JIRA: {{ 'on' if s.jira.enabled else 'off' }}{% if s.jira.enabled %} ({{ s.jira.deployment }}, {{ s.jira.mode }}{{ ', dry run' if s.jira.dry_run }}){% endif %}</p>{% endif %}
+</section>
+
+<section class="sheet">
+  <h3 style="margin-top:0">Secrets this environment needs</h3>
+  <p class="small muted">Sign-in details, Kafka and JIRA credentials. In shared environments these come from the vault or are set by IT; for a personal environment an admin can enter them here. Values are stored in <span class="mono">config/secrets/{{ tab }}.env</span> (not in git), never displayed and never written to logs.</p>
+  <table class="grid"><tr><th>Secret name</th><th>Status</th>{% if user.role == 'admin' and not s.production %}<th>Set a new value</th>{% endif %}</tr>
+  {% for name in all_secrets %}
+  <tr><td class="mono">{{ name }}</td>
+    <td>{% if availability.get(name) %}<span class="pill">available</span>{% if name in local_names %} <span class="muted small">entered in Studio</span>{% endif %}{% else %}<span class="pill bad">missing</span>{% endif %}</td>
+    {% if user.role == 'admin' and not s.production %}
+    <td><form method="post" action="{{ url_for('env_secret', env=tab) }}" class="btns">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}"><input type="hidden" name="name" value="{{ name }}">
+      <input type="password" name="value" autocomplete="new-password" aria-label="Value for {{ name }}" style="max-width:280px">
+      <button class="btn" type="submit">Save</button></form></td>{% endif %}</tr>
+  {% else %}<tr><td colspan="3" class="muted">No secrets referenced yet. Add roles in Edit settings.</td></tr>{% endfor %}
+  </table>
+</section>
+{% endif %}
+{% endblock %}

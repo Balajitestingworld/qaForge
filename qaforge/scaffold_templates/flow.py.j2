@@ -1,0 +1,13 @@
+from __future__ import annotations
+
+from qaforge.core.base_page import BaseFlow
+
+
+class {{ class_name }}(BaseFlow):
+    """{{ title }} journeys. Compose pages; return domain results (receipts, ids, models)."""
+
+    def example_journey(self) -> None:
+        with self.act.group("{{ title }}: example journey"):
+            # page = SomePage(self.session).open()
+            # page.do_something()
+            raise NotImplementedError

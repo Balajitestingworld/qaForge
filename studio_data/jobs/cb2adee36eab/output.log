@@ -1,0 +1,41 @@
+
+tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum] 
+-------------------------------- live log setup --------------------------------
+10:12:35 TEST START tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum]
+-------------------------------- live log call ---------------------------------
+10:12:35 ctx[row] = {'id': 'rtgs_below_minimum', 'jira': 'BANK-106', 'mode': 'RTGS', 'amount': '199999.99', 'expected_error': 'Minimum amount for RTGS'}
+10:12:35 ctx[payee] = {'name': 'Vivaan Chatterjee Qaxlr', 'account_number': 'XXXXXXXX7117', 'ifsc': 'QAFB0964233', 'nickname': 'Krishnacr', 'bank_name': 'QA Test Bank'}
+10:12:35 ctx[transfer] = {'mode': 'RTGS', 'amount': '199999.99', 'remarks': 'B39EB7 automated test 1'}
+10:12:39 Launched webkit 27.2 (headless=False)
+10:12:40 Opened session retail:maker (cached login: True)
+10:12:40 STEP Open retail as maker
+10:12:40 STEP Add beneficiary (reusable steps) › Open Add beneficiary
+10:12:40 STEP Add beneficiary (reusable steps) › Verify visible: Add beneficiary loaded
+10:12:40 STEP Add beneficiary (reusable steps) › Name = Vivaan Chatterjee Qaxlr
+10:12:40 STEP Add beneficiary (reusable steps) › Account = XXXXXXXX7117
+10:12:40 STEP Add beneficiary (reusable steps) › Account confirm = XXXXXXXX7117
+10:12:40 STEP Add beneficiary (reusable steps) › Ifsc = QAFB0964233
+10:12:40 STEP Add beneficiary (reusable steps) › Nickname = Krishnacr
+10:12:40 STEP Add beneficiary (reusable steps) › Submit button
+10:12:40 STEP Add beneficiary (reusable steps) › Verify Flash shows 'Beneficiary Krishnacr added'
+10:12:40 Ledger: recorded beneficiary 'XXXXXXXX7117'
+10:12:40 STEP Open Transfer funds
+10:12:41 STEP Verify visible: Transfer funds loaded
+10:12:41 STEP Beneficiary = Krishnacr - Vivaan Chatterjee Qaxlr
+10:12:41 STEP Mode = RTGS
+10:12:41 STEP Amount = 199999.99
+10:12:41 STEP Continue button
+10:12:41 STEP Verify Form error shows 'Minimum amount for RTGS'
+PASSED
+------------------------------ live log teardown -------------------------------
+10:12:44 TEST END tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum] -> PASSED
+10:12:44 Evidence sealed: test_nocode_specs__test_nocode_transfer_limit_checks-rtgs_below_minimum_02b76169 (passed)
+---------------------------- live log sessionfinish ----------------------------
+10:12:44 JIRA BANK-106 updated with passed result
+10:12:44 JIRA dry run: 2 request(s) written to jira_publish_plan.json
+
+
+------------------------------- qaforge evidence -------------------------------
+Run report : /Users/balajimakam/Downloads/qaforge 2/evidence/20261026T044234Z-b39eb7/index.html
+JIRA plan  : /Users/balajimakam/Downloads/qaforge 2/evidence/20261026T044234Z-b39eb7/jira_publish_plan.json (dry run - nothing sent)
+============================== 1 passed in 9.46s ===============================

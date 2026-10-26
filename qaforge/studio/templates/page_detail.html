@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ p.title }}{% endblock %}
+{% block main %}
+<div class="head">
+  <div><h1>{{ p.title }}</h1>
+    <p class="lede"><span class="mono">{{ p.ref }}</span> · {{ p.path or 'no address (reached by clicking)' }} ·
+      {% if p.generated %}<span class="pill">Studio</span> edited here{% else %}<span class="pill grey">Code</span> maintained by the automation team{% endif %}</p></div>
+  <div class="btns">
+    {% if p.generated and user.role != 'viewer' %}<a class="btn primary" href="{{ url_for('page_edit', ref=p.ref) }}">Edit elements</a>{% endif %}
+    {% if user.role != 'viewer' and p.path %}<a class="btn" href="{{ url_for('spy', path=p.path) }}">Capture more locators</a>{% endif %}
+  </div>
+</div>
+
+{% if p.doc %}<p>{{ p.doc }}</p>{% endif %}
+<table class="grid">
+  <tr><th>Element</th><th>Exact locator in the page object</th><th>Kind</th><th>Line</th></tr>
+  {% for e in p.elements %}
+  <tr><td><b>{{ e.name }}</b>{% if e.sensitive %} <span class="pill warn">hidden in screenshots</span>{% endif %}{% if p.loaded_anchor == e.name %} <span class="pill">page ready check</span>{% endif %}</td>
+      <td>{% if e.locator %}<span class="loc">{{ e.locator }}</span>
+        {% for f in e.fallbacks %}<div class="small"><span class="muted">fallback {{ loop.index }}:</span> <span class="loc">{{ f }}</span></div>{% endfor %}{% else %}<span class="mono small muted">{{ e.source }}</span>{% endif %}</td>
+      <td>{{ e.component or ('locator' if e.kind == 'locator' else e.kind) }}</td>
+      <td class="mono small"><a href="#L{{ e.line }}">{{ e.line }}</a></td></tr>
+  {% else %}<tr><td colspan="4" class="muted">No elements defined.</td></tr>{% endfor %}
+</table>
+
+{% if p.methods %}
+<h2>Actions this page offers (for coded flows)</h2>
+<table class="grid"><tr><th>Action</th><th>Inputs</th><th>What it does</th></tr>
+{% for m in p.methods %}<tr><td class="mono">{{ m.name }}</td><td class="mono small">{{ m.args }}</td><td>{{ m.doc }}</td></tr>{% endfor %}</table>
+{% endif %}
+
+<h2>Used by</h2>
+<p>{% for s in used_by %}<a href="{{ url_for('spec_edit', spec_id=s) }}">{{ s }}</a>{% if not loop.last %}, {% endif %}{% else %}<span class="muted">No Studio test uses this page yet.</span>{% endfor %}</p>
+
+<h2>Source file <span class="muted small mono">{{ p.file }}</span></h2>
+<pre class="console">{% for line in source %}<span id="L{{ loop.index }}">{{ '%4d'|format(loop.index) }}  {{ line }}</span>
+{% endfor %}</pre>
+{% endblock %}

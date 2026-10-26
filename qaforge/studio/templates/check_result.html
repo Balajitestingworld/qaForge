@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Locator health{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Locator health</h1>
+<p class="lede">Each page was opened on {{ result.env|upper }}{% if result.role %} as {{ result.role }}{% endif %} and every element in its page object was looked up with Playwright.</p></div></div>
+<p class="small muted">Found once: healthy. Not on screen now: fine for messages or panels that only appear after an action; otherwise the locator is broken. Found several times: the locator is ambiguous and needs to be made more specific.</p>
+{% for p in result.pages %}
+<section class="sheet">
+  <div class="head" style="margin-bottom:6px"><h2 style="margin:0"><a href="{{ url_for('page_detail', ref=p.ref) }}">{{ p.title }}</a></h2>
+    {% if p.path %}<a class="btn quiet" href="{{ url_for('spy', env=result.env, app=result.app, role=result.role, path=p.path) }}">Recapture this page</a>{% endif %}</div>
+  {% if p.skipped %}<p class="muted">{{ p.skipped }}</p>
+  {% elif p.error %}<div class="notice bad">{{ p.error }}</div>
+  {% else %}
+    {% if p.loaded == false %}<div class="notice bad">The page did not finish loading: {{ p.load_error }}</div>{% endif %}
+    <table class="grid"><tr><th>Element</th><th>Locator</th><th>Result</th></tr>
+    {% for e in p.elements %}
+    <tr><td><b>{{ e.name }}</b></td><td><span class="loc">{{ e.locator }}</span>
+      {% for b in e.fallbacks %}<div class="small"><span class="muted">fallback {{ loop.index }}:</span> <span class="loc">{{ b.locator }}</span> <span class="muted">found {{ b.count }}</span></div>{% endfor %}</td>
+    <td>{% if e.status == 'ok' %}<span class="pill">Found once{% if not e.visible %}, hidden{% endif %}</span>
+        {% elif e.status == 'fallback_only' %}<span class="pill bad">Primary broken, fallback works</span>
+        {% elif e.status == 'not_found' %}<span class="pill warn">Not on screen now</span>
+        {% else %}<span class="pill bad">Found {{ e.count }} times</span>{% endif %}</td></tr>
+    {% endfor %}</table>
+  {% endif %}
+</section>
+{% endfor %}
+{% endblock %}

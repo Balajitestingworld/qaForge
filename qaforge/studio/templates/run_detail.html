@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Run {{ r.run_id }}{% endblock %}
+{% block main %}
+<div class="head">
+  <div><h1>Run <span class="mono" style="font-size:22px">{{ r.run_id }}</span></h1>
+    <p class="lede">{{ (r.env or '').upper() }} · started {{ (r.started or '')[:19].replace('T', ' ') }} UTC by {{ r.by or '-' }} · {{ r.total }} tests</p></div>
+  <span class="stamp big {{ r.outcome }}">{{ r.outcome }}</span>
+</div>
+<div class="btns" style="margin-bottom:16px">
+  <a class="btn primary" href="{{ url_for('evidence_file', sub=r.run_id ~ '/index.html') }}" target="_blank" rel="noopener">Open full run report</a>
+  <form method="post" action="{{ url_for('run_verify', run_id=r.run_id) }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button class="btn" type="submit">Check evidence has not been altered</button></form>
+  {% if has_plan %}<a class="btn quiet" href="{{ url_for('evidence_file', sub=r.run_id ~ '/jira_publish_plan.json') }}" target="_blank">What would be sent to JIRA</a>{% endif %}
+</div>
+
+{% if integrity is not none and not integrity %}
+  <div class="notice">This run has no sealed evidence packs (the tests stopped before any evidence was recorded).</div>
+{% elif integrity %}
+  {% set bad = integrity|rejectattr('ok')|list %}
+  <div class="notice {{ 'bad' if bad else 'good' }}">
+    {% if bad %}Evidence problems found:{% for i in bad %}<div><b class="mono">{{ i.file }}</b>: {{ i.problems|join('; ') }}</div>{% endfor %}
+    {% else %}All {{ integrity|length }} sealed evidence packs match their SHA-256 manifests. Nothing has been changed since the run.{% endif %}
+  </div>
+{% endif %}
+
+<table class="grid">
+  <tr><th>Result</th><th>Test</th><th>JIRA</th><th>Time</th><th>Evidence</th></tr>
+  {% for t in r.results %}
+  <tr><td><span class="stamp {{ t.outcome }}">{{ t.outcome }}</span></td>
+      <td><b>{{ t.test_name }}</b><div class="muted small mono">{{ t.nodeid }}</div>
+        {% if t.error %}<div class="errors small" style="margin-top:4px">{{ t.error[:500] }}</div>{% endif %}</td>
+      <td>{{ t.jira_keys|join(', ') }}</td><td class="mono small">{{ t.duration_s }} s</td>
+      <td><a href="{{ t.report_url }}" target="_blank" rel="noopener">Report</a></td></tr>
+  {% endfor %}
+</table>
+
+{% if jira %}
+<h2>JIRA</h2>
+<p>{{ 'Dry run: nothing was sent.' if jira.dry_run else 'Results were published.' }} {{ jira.linked_tests }} linked tests ·
+  {% for d in jira.defects %}defect {{ d.key }} {{ 'raised' if d.action == 'created' else 'updated (already open)' }}{% if not loop.last %}, {% endif %}{% else %}no defects{% endfor %}.</p>
+{% for e in jira.errors %}<div class="notice bad">{{ e }}</div>{% endfor %}
+{% endif %}
+{% endblock %}

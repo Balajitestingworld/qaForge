@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Captured locators{% endblock %}
+{% block main %}
+<div class="head"><div><h1>{{ result.title or 'Captured elements' }}</h1>
+<p class="lede">{{ result.stats.elements }} elements · {{ result.stats.unique }} with a verified unique locator ·
+  {{ result.stats.fragile }} fragile · {{ result.stats.already_in_pom }} already in page objects. <span class="mono small">{{ result.url }}</span></p></div>
+  <a class="btn" href="{{ url_for('spy', env=job.meta.env, app=job.meta.app, role=job.meta.role, path=job.meta.path) }}">Capture again</a></div>
+
+<div id="spy" class="split">
+  <div class="shotwrap">
+    {% if result.screenshot %}<div class="shot" id="shot"><img id="shot-img" src="{{ url_for('job_file', job_id=job.id, name=result.screenshot) }}" alt="Screenshot of the scanned screen with sensitive values blacked out"></div>
+    <p class="small muted">Hover a row to find it on the screen. Dashed boxes are not selected.</p>{% endif %}
+  </div>
+  <div>
+    <table class="grid">
+      <tr><th><input type="checkbox" id="inc-all" aria-label="Select all"></th><th>Element</th><th>Locator</th></tr>
+      {% for e in result.elements %}
+      <tr data-key="{{ e.key }}" data-desc="{{ e.description }}">
+        <td><input type="checkbox" class="inc" aria-label="Save {{ e.suggested_name }}" {% if not e.best %}disabled{% elif not e.existing_ref %}checked{% endif %}></td>
+        <td style="min-width:180px">
+          <input type="text" class="nm mono" value="{{ e.suggested_name }}" aria-label="Element name">
+          <div class="small muted">{{ e.description }}{% if e.frame %} · in frame{% endif %}</div>
+          {% if e.existing_ref %}<div class="small"><span class="pill">already saved as {{ e.existing_ref.split('.')[-1] }}</span></div>{% endif %}
+          <label class="check small"><input type="checkbox" class="sens" {% if e.sensitive %}checked{% endif %}> Hide in screenshots</label>
+        </td>
+        <td class="cand">
+          {% if e.candidates %}
+          <select class="cand" aria-label="Locator choice">{% for c in e.candidates %}<option value="{{ c.expr }}" data-strategy="{{ c.strategy }}">{{ c.strategy }} · score {{ c.score }} — {{ c.expr }}</option>{% endfor %}</select>
+          {% set c0 = e.candidates[0] %}
+          <div class="loc" style="margin-top:4px">{{ c0.expr }}</div>
+          {% if c0.note %}<div class="small"><span class="pill warn">{{ c0.note }}</span></div>{% endif %}
+          {% else %}<span class="pill bad">No reliable locator found</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="sheet" style="margin-top:16px">
+      <h3 style="margin-top:0">Save the ticked elements to</h3>
+      <div class="btns">
+        <label class="check"><input type="radio" name="dest" value="new" checked> A new page object</label>
+        <label class="check"><input type="radio" name="dest" value="existing" {% if not generated %}disabled{% endif %}> An existing Studio page object</label>
+      </div>
+      <div id="dest-new">
+        <div class="row">
+          <div><label class="f" for="d-app">Application folder</label><input type="text" id="d-app" list="app-dirs" value="{{ app_dirs[0] if app_dirs else 'my_app' }}"><datalist id="app-dirs">{% for a in app_dirs %}<option value="{{ a }}">{% endfor %}</datalist></div>
+          <div><label class="f" for="d-class">Page object name</label><input type="text" id="d-class" class="mono" value="{{ result.suggested_class }}"></div>
+        </div>
+        <div class="row">
+          <div><label class="f" for="d-title">Page name shown to testers</label><input type="text" id="d-title" value="{{ result.title or '' }}"></div>
+          <div><label class="f" for="d-path">Address</label><input type="text" id="d-path" value="{{ result.suggested_path }}"></div>
+          <div><label class="f" for="d-anchor">Page is ready when this is shown</label><select id="d-anchor"></select></div>
+        </div>
+      </div>
+      <div id="dest-existing" hidden>
+        <label class="f" for="d-ref">Page object</label>
+        <select id="d-ref">{% for p in generated %}<option value="{{ p.ref }}">{{ p.app }} › {{ p.title }}</option>{% endfor %}</select>
+      </div>
+      <label class="check" style="margin-top:12px"><input type="checkbox" id="keep-fallbacks" checked> Keep up to two other verified locators as fallbacks (used only if the first one breaks, and always reported)</label>
+      <div class="btns" style="margin-top:14px"><button class="btn primary" id="add-btn" type="button">Save elements</button><span id="add-msg" role="status"></span></div>
+    </div>
+  </div>
+</div>
+<script type="application/json" id="spy-data">{{ {'elements': result.elements}|tojson }}</script>
+{% endblock %}

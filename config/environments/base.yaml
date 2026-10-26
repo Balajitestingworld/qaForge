@@ -1,0 +1,53 @@
+# Shared defaults for every environment. Env files override only what differs.
+framework_label: qaforge
+log_level: INFO
+
+browser:
+  name: chromium
+  headless: true
+  viewport_width: 1440
+  viewport_height: 900
+  locale: en-IN
+  timezone_id: Asia/Kolkata
+  default_timeout_ms: 15000
+  navigation_timeout_ms: 30000
+
+evidence:
+  output_dir: evidence
+  screenshot: each_step          # each_step | on_failure | off
+  trace: "on"                    # on | retain_on_failure | off
+  video: retain_on_failure       # on | retain_on_failure | off
+  har: false                     # keep off: HAR captures request bodies
+  zip_pack: true
+  mask_selectors:
+    - "input[type=password]"
+    - "[data-sensitive]"         # ask dev teams to tag account numbers, balances, PII with this
+
+locators:
+  fallback_policy: warn          # warn: use a fallback locator but flag the test | fail: stop the test
+
+okta:
+  mfa: totp
+  session_ttl_minutes: 45
+  session_dir: .auth
+
+events:
+  default_timeout_s: 60
+  poll_interval_s: 1.0
+
+data:
+  ifsc_bank_codes: [TEST, QAFB]
+  test_card_bins: ["400000", "510000"]
+  account_number_length: 12
+  email_domain: example.test
+  ledger_path: evidence/ledger.sqlite
+
+jira:
+  enabled: false
+  dry_run: true
+  mode: issues
+  attach_evidence: true
+  defect:
+    enabled: true
+    issue_type: Bug
+    labels: [automation, qaforge]

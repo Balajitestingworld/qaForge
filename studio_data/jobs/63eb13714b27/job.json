@@ -1,0 +1,45 @@
+{
+  "id": "63eb13714b27",
+  "kind": "run",
+  "title": "1 test on local",
+  "user": "admin",
+  "args": [
+    "-m",
+    "pytest",
+    "tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-neft_above_limit]",
+    "--env",
+    "local",
+    "-m",
+    "",
+    "-p",
+    "no:cacheprovider",
+    "--jira",
+    "dry-run",
+    "--qa-browser",
+    "chromium",
+    "-o",
+    "log_cli=true",
+    "--log-cli-level=INFO",
+    "-o",
+    "log_cli_format=%(asctime)s %(message)s",
+    "-o",
+    "log_cli_date_format=%H:%M:%S",
+    "-o",
+    "console_output_style=classic",
+    "-q"
+  ],
+  "status": "passed",
+  "created": "2026-10-26T04:34:04.119Z",
+  "started": "2026-10-26T04:34:04.120Z",
+  "finished": "2026-10-26T04:34:09.397Z",
+  "returncode": 0,
+  "run_id": "20261026T043404Z-fff875",
+  "meta": {
+    "env": "local",
+    "tests": [
+      "tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-neft_above_limit]"
+    ],
+    "browser": "chromium",
+    "jira": "dry-run"
+  }
+}

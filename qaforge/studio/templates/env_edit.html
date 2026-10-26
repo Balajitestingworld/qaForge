@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ env }}{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Edit {{ env|upper }} settings</h1>
+<p class="lede">Settings are checked before they are saved. Put secret <em>names</em> here, never secret values.</p></div></div>
+{% if error %}<div class="notice bad">Not saved: {{ error }}</div>{% endif %}
+<form method="post">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <textarea name="yaml" rows="32" spellcheck="false" aria-label="Environment settings">{{ text }}</textarea>
+  <div class="sticky"><div class="btns"><a class="btn quiet" href="{{ url_for('envs') }}">Cancel</a><button class="btn primary" type="submit">Check and save</button></div></div>
+</form>
+{% endblock %}

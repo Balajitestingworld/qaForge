@@ -1,0 +1,6 @@
+name: beneficiary.created event matches the beneficiary entered in the UI
+fields:
+  - {field: name,          expected: ctx.payee.name}
+  - {field: accountNumber, expected: ctx.payee.account_number}
+  - {field: ifsc,          expected: ctx.payee.ifsc}
+  - {field: nickname,      expected: ctx.payee.nickname}

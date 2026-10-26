@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run {{ s.run.run_id }}</title>
+{% include "_style.html.j2" %}
+</head><body><div class="wrap">
+
+<header class="top">
+  <div>
+    <h1>Test run {{ s.run.run_id }}</h1>
+    <div class="sub">Environment {{ s.run.env | upper }} · started {{ s.run.started_at }} · finished {{ s.run.finished_at }}</div>
+  </div>
+  <div>
+    {% for outcome, n in s.counts.items() %}<span class="badge {{ outcome }}">{{ n }} {{ outcome }}</span> {% endfor %}
+  </div>
+</header>
+
+<div class="grid">
+  <div><b>Total tests</b>{{ s.total }}</div>
+  <div><b>Executed by</b>{{ s.run.triggered_by }} @ {{ s.run.host }}</div>
+  <div><b>Build / commit</b>{{ s.run.ci_build or "local run" }} / {{ s.run.git_commit or "n/a" }}</div>
+  <div><b>Browser</b>{{ s.run.browser or "-" }} {{ s.run.browser_version or "" }}</div>
+  <div><b>Framework</b>qaforge {{ s.run.framework_version }} · Playwright {{ s.run.playwright_version }}</div>
+  {% for name, url in s.run.apps.items() %}<div><b>App: {{ name }}</b><span class="mono">{{ url }}</span></div>{% endfor %}
+</div>
+
+<h2>Results</h2>
+<table>
+  <tr><th>Outcome</th><th>Test</th><th>JIRA</th><th>Duration</th><th>Evidence</th></tr>
+  {% for r in s.results %}
+  <tr>
+    <td><span class="badge {{ r.outcome }}">{{ r.outcome }}</span>{% if r.needs_locator_fix %}<br><span class="badge fallback">locator fix needed</span>{% endif %}</td>
+    <td>{{ r.test_name }}<div class="muted mono">{{ r.nodeid }}</div>
+      {% if r.error %}<div class="err">{{ r.error[:400] }}</div>{% endif %}</td>
+    <td>{{ r.jira_keys | join(", ") }}</td>
+    <td class="mono">{{ r.duration_s }} s</td>
+    <td><a href="{{ r.report_rel }}">report</a></td>
+  </tr>
+  {% endfor %}
+</table>
+
+<footer>Run log: <a href="run.log.jsonl">run.log.jsonl</a> · Machine summary: <a href="run_summary.json">run_summary.json</a></footer>
+</div></body></html>

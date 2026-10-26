@@ -1,0 +1,9 @@
+<div class="row">
+  <div><label class="f" for="f-env">Environment</label>
+    <select id="f-env" name="env">{% for e in per_env %}<option {% if e == (prefill.get('env') if prefill else default_env) %}selected{% endif %}>{{ e }}</option>{% endfor %}</select></div>
+  <div><label class="f" for="f-app">Application</label><select id="f-app" name="app" data-keep="{{ prefill.get('app', '') if prefill else '' }}"></select></div>
+  <div><label class="f" for="f-role">Sign in as</label><select id="f-role" name="role" data-keep="{{ prefill.get('role', '') if prefill else '' }}"></select></div>
+  <div style="flex:2 1 240px"><label class="f" for="f-path">Start at address</label>
+    <input type="text" id="f-path" name="path" value="{{ prefill.get('path', '/') if prefill else '/' }}" placeholder="/payments/new"></div>
+</div>
+<script type="application/json" id="env-data">{{ per_env|tojson }}</script>

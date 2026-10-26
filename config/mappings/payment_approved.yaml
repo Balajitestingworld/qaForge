@@ -1,0 +1,6 @@
+name: payments.approved event reflects the checker's approval
+fields:
+  - {field: txnRef,     expected: ctx.txn_ref}
+  - {field: status,     expected: APPROVED}
+  - {field: amount,     expected: ctx.transfer.amount, rule: decimal}
+  - {field: approvedBy, rule: exists}

@@ -1,0 +1,13 @@
+name: payments.initiated event matches the transfer entered in the retail UI
+fields:
+  - {field: txnRef,                    expected: ctx.txn_ref}
+  - {field: mode,                      expected: ctx.transfer.mode}
+  - {field: amount,                    expected: ctx.transfer.amount, rule: decimal}
+  - {field: currency,                  expected: INR}
+  - {field: remarks,                   expected: ctx.transfer.remarks}
+  - {field: beneficiary.name,          expected: ctx.payee.name}
+  - {field: beneficiary.accountNumber, expected: ctx.payee.account_number}
+  - {field: beneficiary.ifsc,          expected: ctx.payee.ifsc}
+  - {field: status,                    expected: PENDING_APPROVAL}
+  - {field: initiatedBy,               rule: exists}
+  - {field: createdAt,                 rule: exists}

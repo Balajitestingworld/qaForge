@@ -1,0 +1,41 @@
+
+tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-neft_above_limit] 
+-------------------------------- live log setup --------------------------------
+10:12:58 TEST START tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-neft_above_limit]
+-------------------------------- live log call ---------------------------------
+10:12:58 ctx[row] = {'id': 'neft_above_limit', 'jira': 'BANK-104', 'mode': 'NEFT', 'amount': '200000.01', 'expected_error': 'exceeds the NEFT per-transaction limit'}
+10:12:58 ctx[payee] = {'name': 'Lakshmi Sharma Qareb', 'account_number': 'XXXXXXXX4559', 'ifsc': 'QAFB0452535', 'nickname': 'Rahulmz', 'bank_name': 'QA Test Bank'}
+10:12:58 ctx[transfer] = {'mode': 'NEFT', 'amount': '200000.01', 'remarks': '0587CA automated test 1'}
+10:12:58 Launched webkit 27.2 (headless=False)
+10:12:59 Opened session retail:maker (cached login: True)
+10:12:59 STEP Open retail as maker
+10:12:59 STEP Add beneficiary (reusable steps) › Open Add beneficiary
+10:12:59 STEP Add beneficiary (reusable steps) › Verify visible: Add beneficiary loaded
+10:12:59 STEP Add beneficiary (reusable steps) › Name = Lakshmi Sharma Qareb
+10:12:59 STEP Add beneficiary (reusable steps) › Account = XXXXXXXX4559
+10:12:59 STEP Add beneficiary (reusable steps) › Account confirm = XXXXXXXX4559
+10:12:59 STEP Add beneficiary (reusable steps) › Ifsc = QAFB0452535
+10:12:59 STEP Add beneficiary (reusable steps) › Nickname = Rahulmz
+10:12:59 STEP Add beneficiary (reusable steps) › Submit button
+10:12:59 STEP Add beneficiary (reusable steps) › Verify Flash shows 'Beneficiary Rahulmz added'
+10:12:59 Ledger: recorded beneficiary 'XXXXXXXX4559'
+10:12:59 STEP Open Transfer funds
+10:12:59 STEP Verify visible: Transfer funds loaded
+10:12:59 STEP Beneficiary = Rahulmz - Lakshmi Sharma Qareb
+10:12:59 STEP Mode = NEFT
+10:12:59 STEP Amount = 200000.01
+10:12:59 STEP Continue button
+10:13:00 STEP Verify Form error shows 'exceeds the NEFT per-transaction limit'
+PASSED
+------------------------------ live log teardown -------------------------------
+10:13:03 TEST END tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-neft_above_limit] -> PASSED
+10:13:03 Evidence sealed: test_nocode_specs__test_nocode_transfer_limit_checks-neft_above_limit_02219119 (passed)
+---------------------------- live log sessionfinish ----------------------------
+10:13:03 JIRA BANK-104 updated with passed result
+10:13:03 JIRA dry run: 2 request(s) written to jira_publish_plan.json
+
+
+------------------------------- qaforge evidence -------------------------------
+Run report : /Users/balajimakam/Downloads/qaforge 2/evidence/20261026T044258Z-0587ca/index.html
+JIRA plan  : /Users/balajimakam/Downloads/qaforge 2/evidence/20261026T044258Z-0587ca/jira_publish_plan.json (dry run - nothing sent)
+============================== 1 passed in 5.03s ===============================

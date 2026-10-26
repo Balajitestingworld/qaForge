@@ -1,0 +1,46 @@
+{
+  "id": "cb2adee36eab",
+  "kind": "run",
+  "title": "1 test on local",
+  "user": "admin",
+  "args": [
+    "-m",
+    "pytest",
+    "tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum]",
+    "--env",
+    "local",
+    "-m",
+    "",
+    "-p",
+    "no:cacheprovider",
+    "--jira",
+    "dry-run",
+    "--qa-browser",
+    "webkit",
+    "-o",
+    "log_cli=true",
+    "--log-cli-level=INFO",
+    "-o",
+    "log_cli_format=%(asctime)s %(message)s",
+    "-o",
+    "log_cli_date_format=%H:%M:%S",
+    "-o",
+    "console_output_style=classic",
+    "-q",
+    "--headed"
+  ],
+  "status": "passed",
+  "created": "2026-10-26T04:42:34.900Z",
+  "started": "2026-10-26T04:42:34.903Z",
+  "finished": "2026-10-26T04:42:44.692Z",
+  "returncode": 0,
+  "run_id": "20261026T044234Z-b39eb7",
+  "meta": {
+    "env": "local",
+    "tests": [
+      "tests/nocode/test_nocode_specs.py::test_nocode[transfer_limit_checks-rtgs_below_minimum]"
+    ],
+    "browser": "webkit",
+    "jira": "dry-run"
+  }
+}

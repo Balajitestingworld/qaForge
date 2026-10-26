@@ -1,0 +1,5 @@
+# Present only to demonstrate the production guard. Any run with --env prod is refused unless
+# allow_production is true here AND the operator sets QA_ALLOW_PRODUCTION=I_UNDERSTAND.
+is_production: true
+allow_production: false
+apps: {}

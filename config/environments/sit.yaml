@@ -1,0 +1,60 @@
+# TEMPLATE for a real non-prod environment. Fill in URLs; secrets come from your vault / CI.
+apps:
+  retail:
+    base_url: https://retail-sit.yourbank.internal
+    auth: okta
+    landing_path: /dashboard
+    ready_selector: '[data-testid="app-header"]'    # agree a stable "signed-in" marker with devs
+  backoffice:
+    base_url: https://backoffice-sit.yourbank.internal
+    auth: okta
+    landing_path: /payments/queue
+    ready_selector: '[data-testid="app-header"]'
+
+users:
+  maker:
+    username_secret: SIT_RETAIL_MAKER_USER
+    password_secret: SIT_RETAIL_MAKER_PASSWORD
+    totp_secret: SIT_RETAIL_MAKER_TOTP_SEED
+  checker:
+    username_secret: SIT_BACKOFFICE_CHECKER_USER
+    password_secret: SIT_BACKOFFICE_CHECKER_PASSWORD
+    totp_secret: SIT_BACKOFFICE_CHECKER_TOTP_SEED
+
+okta:
+  domain: https://yourbank-nonprod.okta.com
+  mfa: totp                        # or "none" if the automation group is MFA-exempt in non-prod
+  # selectors: override only if your Okta sign-in page is customised
+
+browser:
+  channel: msedge                  # use the bank's standard browser build if mandated
+  ignore_https_errors: false
+  # proxy_server: http://proxy.yourbank.internal:8080
+
+secrets:
+  provider: env                    # CI / agent injects vaulted values as env vars
+  # provider: vault
+  # vault_addr: https://vault.yourbank.internal
+  # vault_mount: secret
+  # vault_path: qa/sit/automation
+
+events:
+  source: kafka
+  kafka:
+    bootstrap_servers: kafka-sit-1.yourbank.internal:9093,kafka-sit-2.yourbank.internal:9093
+    security_protocol: SASL_SSL
+    sasl_mechanism: SCRAM-SHA-512
+    username_secret: SIT_KAFKA_USER
+    password_secret: SIT_KAFKA_PASSWORD
+    ssl_ca_location: /etc/pki/yourbank-ca.pem
+    value_format: json             # avro -> also set schema_registry_url
+    # schema_registry_url: https://schema-registry-sit.yourbank.internal
+
+jira:
+  enabled: true
+  dry_run: true                    # flip to false after reviewing jira_publish_plan.json once
+  deployment: datacenter           # or cloud
+  base_url: https://jira.yourbank.internal
+  project_key: BANK
+  mode: issues                     # issues | xray | zephyr
+  token_secret: JIRA_TOKEN
