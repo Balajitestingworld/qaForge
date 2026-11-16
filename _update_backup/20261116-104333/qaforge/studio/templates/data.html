@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Test data{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Test data</h1><p class="lede">Data tables drive a test once per row, for example one row per payment limit to check. Generated data is synthetic and format-valid, so no customer data is ever used.</p></div></div>
+
+<div class="cols">
+<section class="sheet">
+  <h2 style="margin-top:0">Data tables</h2>
+  <table class="grid"><tr><th>File</th><th>Used by</th></tr>
+  {% for f in files %}<tr><td><a href="{{ url_for('data_edit', file=f) }}" class="mono">{{ f }}</a></td>
+    <td>{% for s in used[f] %}<a href="{{ url_for('spec_edit', spec_id=s) }}">{{ s }}</a> {% else %}<span class="muted">—</span>{% endfor %}</td></tr>
+  {% else %}<tr><td colspan="2" class="muted">No data tables yet.</td></tr>{% endfor %}</table>
+  {% if user.role != 'viewer' %}
+  <form method="post" action="{{ url_for('data_new') }}" class="row" style="margin-top:12px">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <div><label class="f" for="n">New table name</label><input type="text" id="n" name="name" placeholder="payment_limits" required></div>
+    <div class="tight"><button class="btn" type="submit">Create</button></div></form>
+  {% endif %}
+</section>
+<section class="sheet">
+  <h2 style="margin-top:0">Kinds of generated data</h2>
+  {% for name, fields in factories.items() %}
+  <h3>{{ name }}</h3><p class="muted small" style="margin:0">{{ fields|join(', ') }}</p>
+  <button class="btn quiet" type="button" data-sample="{{ name }}" data-target="#sample-{{ name }}">Show a sample</button>
+  <pre class="console" id="sample-{{ name }}" hidden></pre>
+  {% endfor %}
+</section>
+</div>
+{% endblock %}

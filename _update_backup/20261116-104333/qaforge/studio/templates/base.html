@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf" content="{{ csrf_token() }}">
+<title>{% block title %}Studio{% endblock %} · QA Forge</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='studio.css') }}">
+</head>
+<body>
+{% if user %}
+<div class="frame">
+  <nav class="rail" aria-label="Main">
+    <a class="wordmark" href="{{ url_for('home') }}">QA Forge <span>Studio</span></a>
+    {% set nav = [
+      ('Build', [('tests', 'Tests'), ('spec_new', 'New test'), ('record', 'Record a test')]),
+      ('Locators', [('pages', 'Page objects'), ('spy', 'Capture locators')]),
+      ('Data', [('data', 'Test data'), ('mappings', 'Field checks')]),
+      ('Results', [('runs', 'Runs'), ('jobs', 'Activity')]),
+      ('Setup', [('envs', 'Environments')] + ([('admin', 'Users and audit')] if user.role == 'admin' else [])),
+    ] %}
+    {% for group, items in nav %}
+      <h2>{{ group }}</h2>
+      {% for ep, label in items %}
+        <a class="nav {% if request.endpoint and request.endpoint.startswith(ep) %}on{% endif %}" href="{{ url_for(ep) }}">{{ label }}</a>
+      {% endfor %}
+    {% endfor %}
+    <div class="who">{{ user.display }}<br><span class="small">{{ user.role }}</span> ·
+      <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}">
+        <button class="btn quiet small" type="submit">Sign out</button></form></div>
+  </nav>
+  <main>
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% for cat, m in msgs %}<div class="notice flash {{ cat }}">{{ m }}</div>{% endfor %}
+    {% endwith %}
+    {% block main %}{% endblock %}
+  </main>
+</div>
+{% else %}
+  {% block bare %}{% endblock %}
+{% endif %}
+<script src="{{ url_for('static', filename='studio.js') }}"></script>
+</body>
+</html>

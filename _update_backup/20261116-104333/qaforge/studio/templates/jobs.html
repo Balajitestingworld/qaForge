@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Activity{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Activity</h1><p class="lede">Everything Studio has run for anyone: test runs, locator captures, health checks and recordings.</p></div></div>
+<table class="grid"><tr><th>Status</th><th>What</th><th>Kind</th><th>Started by</th><th>When (UTC)</th></tr>
+{% for j in jobs %}
+<tr><td><span class="stamp {{ j.status }}">{{ j.status }}</span></td><td><a href="{{ url_for('job', job_id=j.id) }}">{{ j.title }}</a></td>
+<td>{{ {'run': 'Test run', 'scan': 'Locator scan', 'pick': 'Locator pick', 'check': 'Health check', 'record': 'Recording'}.get(j.kind, j.kind) }}</td>
+<td>{{ j.user }}</td><td class="mono small">{{ j.created[:19].replace('T', ' ') }}</td></tr>
+{% else %}<tr><td colspan="5" class="muted">Nothing yet.</td></tr>{% endfor %}
+</table>
+{% endblock %}

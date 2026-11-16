@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Tests{% endblock %}
+{% block main %}
+<div class="head">
+  <div><h1>Tests</h1><p class="lede">Tests built in Studio and tests written in code, listed the way the framework will run them. Tick the ones you want, then run.</p></div>
+  <div class="btns">{% if user.role != 'viewer' %}<a class="btn primary" href="{{ url_for('spec_new') }}">New test</a><a class="btn" href="{{ url_for('record') }}">Record a test</a>{% endif %}
+    <a class="btn quiet" href="{{ url_for('tests', refresh=1) }}">Reload list</a></div>
+</div>
+
+{% if error %}<div class="notice bad">Some tests could not be loaded:<pre class="console" style="margin-top:8px;max-height:200px">{{ error }}</pre></div>{% endif %}
+{% for sid, msg in broken.items() %}<div class="notice bad">No-code test <a href="{{ url_for('spec_edit', spec_id=sid) }}">{{ sid }}</a> has a problem and will not run: {{ msg[:300] }}</div>{% endfor %}
+
+<form method="post" action="{{ url_for('tests_run') }}" id="runform">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <div class="sheet" style="margin-bottom:14px">
+    <div class="row">
+      <div><label class="f" for="q">Find</label><input type="search" id="q" placeholder="Name, JIRA key or tag" data-filter="#testrows tr[data-text]"></div>
+      <div class="tight"><label class="f">Tag</label>
+        <select data-tagfilter="#testrows tr[data-text]"><option value="">All</option>{% for t in tags %}<option>{{ t }}</option>{% endfor %}</select></div>
+      <div class="tight"><label class="f" for="env">Environment</label>
+        <select name="env" id="env">{% for e in envs %}<option {% if e == default_env %}selected{% endif %}>{{ e }}</option>{% endfor %}</select></div>
+      <div class="tight"><label class="f" for="browser">Browser</label>
+        <select name="browser" id="browser"><option>chromium</option><option>firefox</option><option>webkit</option></select></div>
+      <div class="tight"><label class="f" for="jira">JIRA</label>
+        <select name="jira" id="jira"><option value="dry-run">Prepare only (dry run)</option><option value="off">Don't publish</option>
+          {% if user.role == 'admin' %}<option value="on">Publish results</option>{% endif %}</select></div>
+      <div class="tight"><label class="check"><input type="checkbox" name="headed" value="1"> Show browser</label></div>
+      <div class="tight">{% if user.role != 'viewer' %}<button class="btn primary" type="submit" data-countlabel="Run">Run</button>{% endif %}</div>
+    </div>
+  </div>
+
+  <table class="grid" id="testrows">
+    <tr><th style="width:30px"><input type="checkbox" data-checkall="nodeid" aria-label="Select all"></th><th>Test</th><th>Kind</th><th>JIRA</th><th>Tags</th></tr>
+    {% for i in items %}
+    {% set spec = specs.get(i.spec_id) if i.spec_id else None %}
+    <tr data-text="{{ (i.nodeid ~ ' ' ~ (spec.title if spec else i.doc) ~ ' ' ~ i.jira|join(' ') ~ ' ' ~ i.markers|join(' '))|lower }}" data-tags="{{ i.markers|join(' ') }}">
+      <td><input type="checkbox" name="nodeid" value="{{ i.nodeid }}" aria-label="Select {{ i.name }}"></td>
+      <td>{% if spec %}<a href="{{ url_for('spec_edit', spec_id=spec.id) }}"><b>{{ spec.title }}</b></a>{% if '[' in i.name and '-' in i.name.split('[')[1] %} <span class="muted">· row {{ i.name.split('[')[1].rstrip(']').split('-', 1)[1] }}</span>{% endif %}
+          {% else %}<b>{{ i.doc or i.name }}</b>{% endif %}
+          <div class="muted small mono">{{ i.nodeid }}</div></td>
+      <td>{% if i.kind == 'nocode' %}<span class="pill">Studio</span>{% else %}<span class="pill grey">Code</span>{% endif %}</td>
+      <td>{{ i.jira|join(', ') }}</td>
+      <td>{% for m in i.markers %}<span class="pill grey">{{ m }}</span> {% endfor %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="muted">No tests yet. Start with <a href="{{ url_for('spec_new') }}">New test</a>.</td></tr>
+    {% endfor %}
+  </table>
+</form>
+
+{% if reusable %}
+<h2>Reusable steps</h2>
+<p class="muted">Step groups other tests can include with “Use reusable steps”. They don't run on their own.</p>
+<table class="grid"><tr><th>Name</th><th>Id</th><th>Steps</th></tr>
+{% for s in reusable %}<tr><td><a href="{{ url_for('spec_edit', spec_id=s.id) }}">{{ s.title }}</a><div class="muted small">{{ s.description }}</div></td><td class="mono">{{ s.id }}</td><td>{{ s.steps|length }}</td></tr>{% endfor %}
+</table>
+{% endif %}
+{% endblock %}

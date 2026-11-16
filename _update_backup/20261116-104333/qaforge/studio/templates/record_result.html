@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Recording{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Recorded {{ result.steps|length }} steps</h1>
+<p class="lede">{{ result.reused }} steps use elements already in page objects · {{ result.inline }} use new locators (you can save them to a page object later).</p></div></div>
+{% for w in result.warnings %}<div class="notice">{{ w }}</div>{% endfor %}
+<table class="grid">
+  <tr><th>#</th><th>Step</th><th>Element</th><th>Value</th></tr>
+  {% for s in result.steps %}
+  <tr><td class="num">{{ loop.index }}</td><td>{{ labels.get(s.action, s.action) }}</td>
+      <td>{% if s.target %}<span class="pill">{{ s.target.split('.')[-2] }} › {{ s.target.split('.')[-1] }}</span>{% elif s.locator %}<span class="loc">{{ s.locator }}</span>{% endif %}</td>
+      <td class="mono small">{{ s.value if s.value is defined else (s.options.app ~ ' / ' ~ (s.options.role or '') if s.options and s.options.app else '') }}</td></tr>
+  {% endfor %}
+</table>
+<form method="post" class="sheet" style="margin-top:16px">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <h3 style="margin-top:0">Turn this recording into a test</h3>
+  <div class="row">
+    <div><label class="f" for="t">Test name</label><input type="text" id="t" name="title" required></div>
+    <div><label class="f" for="i">Test id</label><input type="text" id="i" name="id" class="mono" required placeholder="lowercase_with_underscores"></div>
+    <div class="tight"><button class="btn primary" type="submit">Open in the test designer</button></div>
+  </div>
+  <p class="small muted" style="margin-bottom:0">Nothing is saved until you press Save test in the designer, where you can add checks, data and event verification.</p>
+</form>
+{% endblock %}

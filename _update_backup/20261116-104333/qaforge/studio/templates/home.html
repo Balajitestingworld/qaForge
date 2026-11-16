@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block main %}
+<div class="head"><div><h1>Good to see you, {{ user.display.split(' ')[0] }}</h1>
+  <p class="lede">Build tests by choosing steps, record them by clicking through the app, and capture locators straight from the screen. Every run produces sealed audit evidence.</p></div></div>
+
+<div class="ledger">
+  <section class="sheet">
+    {% if last %}
+      <div class="lastrun">
+        <span class="stamp big {{ last.outcome }}">{{ last.outcome }}</span>
+        <div>
+          <div class="muted small">Latest run · {{ (last.env or '').upper() }} · {{ last.started[:16].replace('T', ' ') if last.started else 'in progress' }} UTC · by {{ last.by or '-' }}</div>
+          <div class="figures">
+            <div>{{ last.counts.get('passed', 0) }}<small>passed</small></div>
+            <div>{{ last.counts.get('failed', 0) + last.counts.get('error', 0) }}<small>failed</small></div>
+            <div>{{ last.total }}<small>tests</small></div>
+          </div>
+          <p style="margin:12px 0 0"><a href="{{ url_for('run_detail', run_id=last.run_id) }}">Open run {{ last.run_id }}</a></p>
+        </div>
+      </div>
+    {% else %}
+      <h2 style="margin-top:0">No runs yet</h2>
+      <p class="muted">Pick tests on the Tests page and press Run. The results and evidence appear here.</p>
+    {% endif %}
+  </section>
+  <section class="sheet tasks">
+    <a href="{{ url_for('spec_new') }}"><b>Build a test</b><span>Choose steps from lists, no code</span></a>
+    <a href="{{ url_for('record') }}"><b>Record a test</b><span>Click through the app; steps are written for you</span></a>
+    <a href="{{ url_for('spy') }}"><b>Capture locators</b><span>Scan a screen, save elements to a page object</span></a>
+    <a href="{{ url_for('tests') }}"><b>Run tests</b><span>Pick tests, environment and browser</span></a>
+  </section>
+</div>
+
+{% if active %}
+<h2>Running now</h2>
+<table class="grid"><tr><th>Status</th><th>What</th><th>Started by</th><th></th></tr>
+{% for j in active %}<tr><td><span class="stamp {{ j.status }}">{{ j.status }}</span></td><td>{{ j.title }}</td><td>{{ j.user }}</td>
+<td><a href="{{ url_for('job', job_id=j.id) }}">Watch</a></td></tr>{% endfor %}</table>
+{% endif %}
+
+<h2>Recent runs</h2>
+{% if runs %}
+<table class="grid">
+  <tr><th>Result</th><th>Run</th><th>Environment</th><th>Passed</th><th>Failed</th><th>Started by</th></tr>
+  {% for r in runs %}
+  <tr><td><span class="stamp {{ r.outcome }}">{{ r.outcome }}</span></td>
+      <td><a href="{{ url_for('run_detail', run_id=r.run_id) }}" class="mono">{{ r.run_id }}</a></td>
+      <td>{{ (r.env or '-').upper() }}</td><td>{{ r.counts.get('passed', 0) }}</td>
+      <td>{{ r.counts.get('failed', 0) + r.counts.get('error', 0) }}</td><td>{{ r.by or '-' }}</td></tr>
+  {% endfor %}
+</table>
+{% else %}<p class="muted">Nothing has run yet.</p>{% endif %}
+
+<p class="muted small" style="margin-top:28px">{{ n_specs }} no-code tests · {{ n_pages }} page objects holding {{ n_elements }} elements</p>
+{% endblock %}
